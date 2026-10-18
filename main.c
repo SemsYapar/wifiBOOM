@@ -21,7 +21,7 @@
 #include "cJSON.h"
 #include "driver/gpio.h"
 
-static const char *TAG = "WiFiBOOM";
+static const char *TAG = "wifiBOOM";
 
 #define FIRST_CHANNEL       1
 #define LAST_CHANNEL        13
@@ -1151,7 +1151,7 @@ void app_main(void) {
     }
 
     printf("=========================================\n");
-    printf(" WiFiBOOM SYSTEM READY (15s Initial Scan)\n");
+    printf(" wifiBOOM SYSTEM READY (15s Initial Scan)\n");
     printf("=========================================\n");
 
     system_cmd_t cmd;
