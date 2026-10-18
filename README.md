@@ -1,4 +1,4 @@
-# ⚡ WiFiBOOM · Wireless Network Pentesting Tool
+# ⚡ wifiBOOM · Wireless Network Pentesting Tool
 
 [English](#english) | [Türkçe](#türkçe)
 
