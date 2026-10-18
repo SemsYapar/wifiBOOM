@@ -6,7 +6,7 @@
 
 ## English
 
-An 802.11 passive monitoring and controlled penetration-testing tool developed with ESP-IDF for ESP32 microcontrollers. wifiBOOM was developed using an ESP-32S development board and ESP-IDF v5.5.5.**
+An 802.11 passive monitoring and controlled penetration-testing tool developed with ESP-IDF for ESP32 microcontrollers. **wifiBOOM was developed using an ESP-32S development board and ESP-IDF v5.5.5.**
 
 ### Technical Highlights & Custom Wi-Fi Library
 
@@ -107,7 +107,7 @@ Replace `COM7` with the serial port assigned to your development board.
 
 ## Türkçe
 
-ESP32 mikrodenetleyicileri için ESP-IDF ortamında geliştirilmiş, 802.11 pasif izleme ve kontrollü sızma testi aracı. wifiBOOM'un geliştirme sürecinde ESP-32S geliştirme kartı ve ESP-IDF v5.5.5 kullanılmıştır.**
+ESP32 mikrodenetleyicileri için ESP-IDF ortamında geliştirilmiş, 802.11 pasif izleme ve kontrollü sızma testi aracı. **wifiBOOM'un geliştirme sürecinde ESP-32S geliştirme kartı ve ESP-IDF v5.5.5 kullanılmıştır.**
 
 ### Teknik Öne Çıkanlar ve Özel Wi-Fi Kütüphanesi
 
