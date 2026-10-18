@@ -77,16 +77,6 @@ git clone https://github.com/SemsYapar/wifiBOOM.git
 cd wifiBOOM
 ```
 
-#### 2. Check the Component CMake Configuration
-
-Make sure `main/CMakeLists.txt` embeds `index.html`:
-
-```cmake
-idf_component_register(SRCS "main.c"
-                       INCLUDE_DIRS "."
-                       EMBED_FILES "index.html")
-```
-
 #### Automatic Library Installation
 
 The root `CMakeLists.txt` performs the following operations during CMake configuration:
@@ -98,7 +88,7 @@ The root `CMakeLists.txt` performs the following operations during CMake configu
 
 **Warning:** This modifies the shared ESP-IDF installation and may affect other projects using the same ESP-IDF environment. To restore the original archive, copy `libnet80211.a.original` back to `libnet80211.a` while no build is running. Ensure your ESP-IDF version is compatible with the bundled archive.
 
-#### 3. Build and Flash
+#### 2. Build and Flash
 
 ```bash
 idf.py set-target esp32
@@ -188,16 +178,6 @@ git clone https://github.com/SemsYapar/wifiBOOM.git
 cd wifiBOOM
 ```
 
-#### 2. CMake Yapılandırmasını Kontrol Edin
-
-`main/CMakeLists.txt` dosyasında `index.html` dosyasının gömülü dosya olarak tanımlandığından emin olun:
-
-```cmake
-idf_component_register(SRCS "main.c"
-                       INCLUDE_DIRS "."
-                       EMBED_FILES "index.html")
-```
-
 #### Otomatik Kütüphane Kurulumu
 
 Kök dizindeki `CMakeLists.txt`, CMake yapılandırması sırasında şu işlemleri gerçekleştirir:
@@ -209,7 +189,7 @@ Kök dizindeki `CMakeLists.txt`, CMake yapılandırması sırasında şu işleml
 
 **Uyarı:** Bu işlem ortak ESP-IDF kurulumunu değiştirir ve aynı kurulumu kullanan diğer projeleri etkileyebilir. Orijinal arşive dönmek için herhangi bir derleme çalışmıyorken `libnet80211.a.original` dosyasını `libnet80211.a` adıyla geri kopyalayın. Kullanılan ESP-IDF sürümünün projeyle gelen arşivle uyumlu olduğundan emin olun.
 
-#### 3. Derleyin ve Yükleyin
+#### 2. Derleyin ve Yükleyin
 
 ```bash
 idf.py set-target esp32
