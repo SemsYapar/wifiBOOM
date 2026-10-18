@@ -8,19 +8,15 @@
 
 An 802.11 passive monitoring and controlled penetration-testing tool developed with ESP-IDF for ESP32 microcontrollers. **wifiBOOM was developed using an ESP-32S development board.**
 
-### Technical Highlights & Sanity Check Bypass
+### Technical Highlights & Custom Wi-Fi Library
 
-In standard ESP-IDF builds, the `ieee80211_raw_frame_sanity_check` function within `libnet80211.a` restricts transmission of certain 802.11 management frames. wifiBOOM overrides this validation function using the weak-symbol mechanism:
+wifiBOOM includes a custom `main/libnet80211.a` archive for the original ESP32 target. In this archive, `ieee80211_raw_frame_sanity_check` is marked as a **weak symbol**. This makes it possible for a strong definition of the same symbol to take precedence at link time, rather than requiring users to patch the ESP-IDF archive themselves.
 
-```c
-int ieee80211_raw_frame_sanity_check(int32_t arg, int32_t arg2, int32_t arg3) {
-    return 0;
-}
-```
+**No manual symbol patching or library modification is required.** The project's root `CMakeLists.txt` automatically backs up the ESP-IDF archive as `libnet80211.a.original` (if a backup does not already exist) and copies the bundled custom archive into the ESP-IDF library directory before configuring the project.
 
-The original symbol in `libnet80211.a` is marked as **weak**, allowing it to be replaced by an implementation of `ieee80211_raw_frame_sanity_check` that always returns `0`. This bypasses the default validation restrictions and permits raw transmission of management frames, including Deauthentication and Disassociation frames, through `esp_wifi_80211_tx()`. Actual transmission behavior may still depend on the hardware and ESP-IDF version.
+Note that marking a symbol as weak does not, by itself, disable the sanity check: the effective behavior depends on the implementation selected by the linker. Raw frame transmission also depends on the ESP-IDF version and hardware.
 
-*For a detailed technical analysis of this mechanism, see the research article:*  
+*For background on the weak-symbol mechanism, see the research article:*  
 👉 [ESP32 Wi-Fi Deauth Send Bypass Writeup](https://semsyapar.github.io/2026/10/18/esp32-wifi-deauth-send-bypass.html)
 
 ### Key Features
@@ -91,6 +87,17 @@ idf_component_register(SRCS "main.c"
                        EMBED_FILES "index.html")
 ```
 
+#### Automatic Library Installation
+
+The root `CMakeLists.txt` performs the following operations during CMake configuration:
+
+1. Confirms that the build target is `esp32` (when `IDF_TARGET` is set).
+2. Locates the ESP-IDF archive at `$IDF_PATH/components/esp_wifi/lib/esp32/libnet80211.a`.
+3. Creates a one-time backup named `libnet80211.a.original`.
+4. Copies `main/libnet80211.a` over the ESP-IDF archive, skipping the copy if the files are identical.
+
+**Warning:** This modifies the shared ESP-IDF installation and may affect other projects using the same ESP-IDF environment. To restore the original archive, copy `libnet80211.a.original` back to `libnet80211.a` while no build is running. Ensure your ESP-IDF version is compatible with the bundled archive.
+
 #### 3. Build and Flash
 
 ```bash
@@ -112,19 +119,15 @@ Replace `COM7` with the serial port assigned to your development board.
 
 ESP32 mikrodenetleyicileri için ESP-IDF ortamında geliştirilmiş, 802.11 pasif izleme ve kontrollü sızma testi aracı. **wifiBOOM'un geliştirme sürecinde ESP-32S geliştirme kartı kullanılmıştır.**
 
-### Teknik Öne Çıkanlar ve Sanity Check Bypass
+### Teknik Öne Çıkanlar ve Özel Wi-Fi Kütüphanesi
 
-Standart ESP-IDF derlemelerinde, `libnet80211.a` içerisindeki `ieee80211_raw_frame_sanity_check` fonksiyonu bazı 802.11 management frame'lerinin gönderimini kısıtlar. wifiBOOM içerisinde bu doğrulama fonksiyonu weak sembol yöntemiyle ezilmektedir:
+wifiBOOM, orijinal ESP32 hedefi için özelleştirilmiş bir `main/libnet80211.a` arşivi içerir. Bu arşivde `ieee80211_raw_frame_sanity_check` sembolü **weak (zayıf sembol)** olarak işaretlenmiştir. Böylece aynı sembolün güçlü (`strong`) bir tanımı bağlantı aşamasında öncelik kazanabilir; kullanıcıların ESP-IDF arşivini kendilerinin patch'lemesine gerek kalmaz.
 
-```c
-int ieee80211_raw_frame_sanity_check(int32_t arg, int32_t arg2, int32_t arg3) {
-    return 0;
-}
-```
+**Manuel sembol değiştirme veya kütüphane düzenleme işlemi yapmanız gerekmez.** Projenin kök dizinindeki `CMakeLists.txt`, ESP-IDF arşivini (daha önce yedeklenmediyse) `libnet80211.a.original` adıyla yedekler ve projeyle gelen özel arşivi ESP-IDF kütüphane dizinine otomatik olarak kopyalar.
 
-`libnet80211.a` içerisindeki orijinal sembol **weak** olarak işaretlenerek `ieee80211_raw_frame_sanity_check` fonksiyonu, her zaman `0` döndüren bir uygulamayla değiştirilir. Bu sayede varsayılan doğrulama kısıtlamaları bypass edilir ve Deauthentication ile Disassociation çerçeveleri dahil management frame'leri doğrudan `esp_wifi_80211_tx()` üzerinden iletilebilir. Gerçek iletim davranışı kullanılan donanıma ve ESP-IDF sürümüne bağlı olarak değişebilir.
+Bir sembolün `weak` olması, tek başına sanity check mekanizmasını devre dışı bırakmaz: geçerli davranış, linker'ın seçtiği fonksiyon uygulamasına bağlıdır. Ham çerçeve iletimi ayrıca ESP-IDF sürümüne ve donanıma bağlıdır.
 
-*Bu mekanizmanın detaylı teknik incelemesi için araştırma yazısına göz atabilirsiniz:*  
+*Weak sembol mekanizmasının teknik arka planı için araştırma yazısı:*  
 👉 [ESP32 Wi-Fi Deauth Send Bypass Araştırma Yazısı](https://semsyapar.github.io/2026/10/18/esp32-wifi-deauth-send-bypass.html)
 
 ### Temel Özellikler
@@ -194,6 +197,17 @@ idf_component_register(SRCS "main.c"
                        INCLUDE_DIRS "."
                        EMBED_FILES "index.html")
 ```
+
+#### Otomatik Kütüphane Kurulumu
+
+Kök dizindeki `CMakeLists.txt`, CMake yapılandırması sırasında şu işlemleri gerçekleştirir:
+
+1. `IDF_TARGET` tanımlıysa hedefin `esp32` olduğunu kontrol eder.
+2. `$IDF_PATH/components/esp_wifi/lib/esp32/libnet80211.a` dosyasını bulur.
+3. Orijinal arşivi bir kez `libnet80211.a.original` adıyla yedekler.
+4. `main/libnet80211.a` dosyasını ESP-IDF arşivinin üzerine kopyalar; dosyalar aynıysa gereksiz kopyalama yapmaz.
+
+**Uyarı:** Bu işlem ortak ESP-IDF kurulumunu değiştirir ve aynı kurulumu kullanan diğer projeleri etkileyebilir. Orijinal arşive dönmek için herhangi bir derleme çalışmıyorken `libnet80211.a.original` dosyasını `libnet80211.a` adıyla geri kopyalayın. Kullanılan ESP-IDF sürümünün projeyle gelen arşivle uyumlu olduğundan emin olun.
 
 #### 3. Derleyin ve Yükleyin
 
