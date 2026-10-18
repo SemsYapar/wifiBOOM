@@ -92,7 +92,7 @@ Ensure `main/CMakeLists.txt` includes `index.html` as an embedded file:
 #### 3. Build & Flash
     idf.py set-target esp32
     idf.py build
-    idf.py -p /dev/ttyUSB0 flash monitor
+    idf.py -p COM7 flash monitor
 
 ---
 
@@ -192,7 +192,7 @@ Standart ESP-IDF derlemeleri, `libnet80211.a` içerisindeki doğrulama fonksiyon
 #### 3. Derleyin ve Yükleyin
     idf.py set-target esp32
     idf.py build
-    idf.py -p /dev/ttyUSB0 flash monitor
+    idf.py -p COM7 flash monitor
 
 ---
 
