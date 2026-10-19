@@ -10,7 +10,7 @@ An 802.11 passive monitoring and controlled penetration-testing tool developed w
 
 ### Technical Highlights & Custom Wi-Fi Library
 
-wifiBOOM includes a custom `main/libnet80211.a` archive for the original ESP32 target. In this archive, `ieee80211_raw_frame_sanity_check` is marked as a **weak symbol**. This makes it possible for a strong definition of the same symbol to take precedence at link time, rather than requiring users to patch the ESP-IDF archive themselves.
+wifiBOOM includes a custom `main/libnet80211.a` archive for the original ESP32 target. In this archive, `ieee80211_raw_frame_sanity_check` is marked as a **weak symbol**. In this way, a strong definition of the same symbol to take precedence at link time, rather than requiring users to patch the ESP-IDF archive themselves.
 
 **No manual symbol patching or library modification is required.** The project's root `CMakeLists.txt` automatically backs up the ESP-IDF archive as `libnet80211.a.original` (if a backup does not already exist) and copies the bundled custom archive into the ESP-IDF library directory before configuring the project.
 
@@ -111,7 +111,7 @@ ESP32 mikrodenetleyicileri için ESP-IDF ortamında geliştirilmiş, 802.11 pasi
 
 ### Teknik Öne Çıkanlar ve Özel Wi-Fi Kütüphanesi
 
-wifiBOOM, orijinal ESP32 hedefi için özelleştirilmiş bir `main/libnet80211.a` arşivi içerir. Bu arşivde `ieee80211_raw_frame_sanity_check` sembolü **weak (zayıf sembol)** olarak işaretlenmiştir. Böylece aynı sembolün güçlü (`strong`) bir tanımı bağlantı aşamasında öncelik kazanabilir; kullanıcıların ESP-IDF arşivini kendilerinin patch'lemesine gerek kalmaz.
+wifiBOOM, orijinal ESP32 hedefi için özelleştirilmiş bir `main/libnet80211.a` arşivi içerir. Bu arşivde `ieee80211_raw_frame_sanity_check` sembolü **weak (zayıf sembol)** olarak işaretlenmiştir. Böylece aynı sembolün güçlü (`strong`) bir tanımı linking aşamasında öncelik kazanır; kullanıcıların ESP-IDF arşivini kendilerinin patch'lemesine gerek kalmaz.
 
 **Manuel sembol değiştirme veya kütüphane düzenleme işlemi yapmanız gerekmez.** Projenin kök dizinindeki `CMakeLists.txt`, ESP-IDF arşivini (daha önce yedeklenmediyse) `libnet80211.a.original` adıyla yedekler ve projeyle gelen özel arşivi ESP-IDF kütüphane dizinine otomatik olarak kopyalar.
 
